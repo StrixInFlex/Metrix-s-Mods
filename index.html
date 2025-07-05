@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Metrix's Mods - Home</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* Base styles */
+        :root {
+            --neon-blue: #00FFFF; /* Cyan/Aqua */
+            --neon-purple: #9933FF; /* Purple */
+            --dark-bg: #0a0a0a;
+            --mid-dark-bg: #1a1a1a;
+            --text-light: #E0E0E0;
+            --text-accent: var(--neon-blue);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden; /* Prevent horizontal scroll from animations */
+            position: relative;
+        }
+
+        /* --- Animated Background Grid --- */
+        #background-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+            will-change: transform, opacity;
+        }
+
+        #background-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(to right, rgba(0,255,255,0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0,255,255,0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            opacity: 0.15;
+            animation: moveGrid 60s linear infinite;
+            will-change: background-position;
+        }
+
+        @keyframes moveGrid {
+            from { background-position: 0 0; }
+            to { background-position: 50px 50px; }
+        }
+
+        /* --- Home Bar Styles --- */
+        .homebar-wrapper {
+            display: flex;
+            justify-content: center;
+            padding-top: 30px;
+            position: relative;
+            z-index: 100;
+        }
+
+        .homebar {
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 70px;
+            padding: 0 2rem;
+            border-radius: 15px;
+            overflow: hidden;
+            gap: 20px; /* Adjusted gap to fit social buttons */
+            opacity: 0;
+            transform: translateY(-80px);
+            transition: opacity 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            max-width: 1000px;
+            width: 90%;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.2), 0 0 60px rgba(0, 255, 255, 0.1);
+            animation: homebarGlow 6s infinite alternate ease-in-out;
+            will-change: box-shadow, transform, opacity;
+        }
+
+        @keyframes homebarGlow {
+            0% { box-shadow: 0 0 30px rgba(0, 255, 255, 0.2), 0 0 60px rgba(0, 255, 255, 0.1); }
+            100% { box-shadow: 0 0 40px rgba(0, 255, 255, 0.4), 0 0 80px rgba(0, 255, 255, 0.2); }
+        }
+
+        .homebar.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Combined styling for both <a> and <button> in homebar to ensure consistency */
+        .homebar a:not(.social-button), /* Exclude social buttons from this specific width */
+        .homebar button {
+            text-decoration: none; /* Crucial: Remove underline for links */
+            border-radius: 10px;
+            width: 220px; /* Keep main buttons wide */
+            background-color: var(--mid-dark-bg);
+            color: var(--text-light);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px 25px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            /* Flexbox for centering span content inside */
+            display: flex; /* Make it a flex container */
+            justify-content: center; /* Center horizontally */
+            align-items: center; 
+            
+            transition: 
+                background-color 0.4s ease, 
+                transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                box-shadow 0.4s ease,
+                color 0.4s ease,
+                text-shadow 0.4s ease,
+                opacity 0.6s ease-out;
+            
+            opacity: 0;
+            transform: translateY(30px);
+            will-change: transform, opacity, box-shadow;
+        }
+
+        /* Inner glow effect for buttons/links */
+        .homebar a::before,
+        .homebar button::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: radial-gradient(circle at center, rgba(0, 255, 255, 0.5) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: scale(0);
+            transition: transform 0.4s ease, opacity 0.4s ease;
+            opacity: 0;
+            z-index: 1;
+            will-change: transform, opacity;
+        }
+
+        .homebar a:hover::before,
+        .homebar button:hover::before {
+            transform: scale(3);
+            opacity: 1;
+        }
+
+        .homebar a span,
+        .homebar button span {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Staggered animation for homebar items */
+        .homebar.loaded .homebarbutton {
+            transform: translateY(0);
+            opacity: 1;
+            transition-delay: 0.2s;
+        }
+
+        .homebar.loaded .shopbutton {
+            transform: translateY(0);
+            opacity: 1;
+            transition-delay: 0.4s;
+        }
+
+        .homebar.loaded .aboutbutton { /* Now targets <a> as well */
+            transform: translateY(0);
+            opacity: 1;
+            transition-delay: 0.6s;
+        }
+
+        /* Hover with more dramatic glow */
+        .homebar a:not(.social-button):hover, /* Exclude social buttons from this hover effect */
+        .homebar button:hover {
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px var(--neon-blue), 0 0 20px rgba(0, 255, 255, 0.6);
+            transform: translateY(-5px) scale(1.08);
+            background-color: var(--dark-bg);
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 25px var(--neon-blue), 0 0 50px rgba(0, 255, 255, 0.4);
+        }
+
+        /* --- NEW: Social Button Specific Styles --- */
+        .social-button {
+            width: 50px; /* Smaller size for icons */
+            height: 50px;
+            border-radius: 50%; /* Make them round */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem; /* Icon size */
+            color: var(--text-light);
+            background-color: var(--mid-dark-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative; /* For inner glow */
+            overflow: hidden;
+            flex-shrink: 0; /* Prevent shrinking on smaller screens */
+            opacity: 0; /* Initial state for animation */
+            transform: translateY(30px); /* Initial state for animation */
+            will-change: transform, opacity, box-shadow, background-color, color;
+        }
+
+        .social-button:hover {
+            transform: translateY(-5px) scale(1.15); /* Lift and enlarge on hover */
+            color: var(--neon-blue);
+            text-shadow: 0 0 8px var(--neon-blue);
+            box-shadow: 0 0 20px var(--neon-blue), 0 0 30px rgba(0, 255, 255, 0.4);
+            border-color: var(--neon-blue);
+            background-color: var(--dark-bg);
+        }
+
+        /* Inner glow for social buttons (reusing existing effect) */
+        .social-button::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: radial-gradient(circle at center, rgba(0, 255, 255, 0.5) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: scale(0);
+            transition: transform 0.4s ease, opacity 0.4s ease;
+            opacity: 0;
+            z-index: 1;
+            will-change: transform, opacity;
+        }
+
+        .social-button:hover::before {
+            transform: scale(2.5); /* Slightly smaller scale than main buttons */
+            opacity: 1;
+        }
+
+        .social-button i {
+            position: relative; /* Ensure icon is above pseudo-element */
+            z-index: 2;
+        }
+
+        /* Specific colors for social buttons (optional, but nice) */
+        .discord-button:hover {
+            color: #7289DA; /* Discord blue */
+            text-shadow: 0 0 8px #7289DA;
+            box-shadow: 0 0 20px #7289DA, 0 0 30px rgba(114, 137, 218, 0.4);
+            border-color: #7289DA;
+        }
+        .twitter-button:hover {
+            color: #1DA1F2; /* Twitter blue */
+            text-shadow: 0 0 8px #1DA1F2;
+            box-shadow: 0 0 20px #1DA1F2, 0 0 30px rgba(29, 161, 242, 0.4);
+            border-color: #1DA1F2;
+        }
+
+        /* Update homebar loaded animation delays to include social buttons */
+        .homebar.loaded .social-button:nth-of-type(4) { /* This targets the first social button after the 3 main links */
+            transform: translateY(0);
+            opacity: 1;
+            transition-delay: 0.8s;
+        }
+        .homebar.loaded .social-button:nth-of-type(5) { /* This targets the second social button */
+            transform: translateY(0);
+            opacity: 1;
+            transition-delay: 1.0s;
+        }
+
+        /* --- Header Style --- */
+        .Header {
+            font-family: 'Orbitron', sans-serif;
+            opacity: 0;
+            transform: translateY(-50px);
+            transition: opacity 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            color: white;
+            text-align: center;
+            margin-top: 8vh; /* Adjusted for home page now */
+            font-size: 4.5rem;
+            font-weight: 700;
+            text-shadow: 0 0 20px var(--neon-purple), 0 0 40px var(--neon-purple), 0 0 60px rgba(153, 51, 255, 0.4);
+            letter-spacing: 5px;
+            position: relative;
+            z-index: 10;
+            animation: headerPulse 3s infinite alternate ease-in-out;
+            will-change: transform, opacity, text-shadow;
+        }
+
+        @keyframes headerPulse {
+            0% { text-shadow: 0 0 20px var(--neon-purple), 0 0 40px var(--neon-purple), 0 0 60px rgba(153, 51, 255, 0.4); }
+            100% { text-shadow: 0 0 25px var(--neon-purple), 0 0 50px var(--neon-purple), 0 0 70px rgba(153, 51, 255, 0.6); }
+        }
+
+        .Header.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- Main Content (Hero Section) --- */
+        .hero-section {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transition-delay: 0.8s;
+            text-align: center;
+            max-width: 900px;
+            margin-top: 60px;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+            will-change: transform, opacity;
+        }
+
+        .hero-section.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .hero-section p {
+            font-size: 1.5rem;
+            line-height: 1.6;
+            color: #ccc;
+            margin-bottom: 40px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .hero-button {
+            background-color: var(--neon-blue);
+            color: var(--dark-bg);
+            border: none;
+            padding: 18px 40px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+            transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+            box-shadow: 0 0 15px var(--neon-blue);
+            will-change: transform, background-color, box-shadow;
+        }
+
+        .hero-button:hover {
+            background-color: white;
+            color: var(--neon-blue);
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 0 25px white, 0 0 40px var(--neon-blue);
+        }
+
+        /* --- Popup Styles (for browser warning) --- */
+        .browser-warning-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .browser-warning-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .browser-warning-popup {
+            background-color: var(--mid-dark-bg);
+            border: 3px solid var(--neon-blue);
+            border-radius: 15px;
+            padding: 40px;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.5), 0 0 60px rgba(0, 255, 255, 0.3);
+            transform: translateY(-20px);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            position: relative;
+        }
+
+        .browser-warning-overlay.show .browser-warning-popup {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .browser-warning-popup h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--neon-blue);
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        .browser-warning-popup p {
+            font-size: 1.1em;
+            color: var(--text-light);
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .browser-warning-popup button {
+            background-color: var(--neon-blue);
+            color: var(--dark-bg);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        .browser-warning-popup button:hover {
+            background-color: white;
+            color: var(--neon-blue);
+            transform: translateY(-3px);
+            box-shadow: 0 0 15px white, 0 0 25px var(--neon-blue);
+        }
+
+        /* --- Responsive Adjustments --- */
+        @media (max-width: 1024px) {
+            .Header { font-size: 4rem; }
+            .hero-section p { font-size: 1.4rem; }
+            .hero-button { padding: 15px 35px; font-size: 1.4rem; }
+        }
+
+        @media (max-width: 768px) {
+            .homebar { 
+                flex-direction: row; /* Keep row for small screens, but allow wrap */
+                flex-wrap: wrap; /* Allow wrapping */
+                height: auto; 
+                padding: 1rem; 
+                gap: 15px; 
+                justify-content: center; /* Center items when wrapped */
+            }
+            .homebar a, 
+            .homebar button { 
+                width: 150px; /* Adjust button width */
+                font-size: 1.1rem;
+            }
+            .social-button {
+                width: 40px; /* Make social buttons smaller */
+                height: 40px;
+                font-size: 1.2rem;
+            }
+            .Header { font-size: 3rem; margin-top: 5vh; letter-spacing: 3px;}
+            .hero-section { margin-top: 40px; }
+            .hero-section p { font-size: 1.2rem; }
+            .hero-button { padding: 12px 30px; font-size: 1.2rem; }
+            .hero-buttons { gap: 20px; }
+            .browser-warning-popup { padding: 30px; max-width: 90vw; }
+            .browser-warning-popup h2 { font-size: 1.8em; }
+            .browser-warning-popup p { font-size: 1em; }
+        }
+
+        @media (max-width: 480px) {
+            .Header { font-size: 2.5rem; letter-spacing: 2px; }
+            .homebar a:not(.social-button), 
+            .homebar button { font-size: 1rem; padding: 10px 15px; width: 120px; }
+            .social-button {
+                width: 35px; /* Even smaller social buttons */
+                height: 35px;
+                font-size: 1rem;
+            }
+            .hero-section p { font-size: 1em; }
+            .hero-button { padding: 10px 20px; font-size: 1em; }
+            .browser-warning-popup h2 { font-size: 1.5em; }
+        }
+
+        .social-button {
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="background-overlay">
+        <div id="background-grid"></div>
+    </div>
+
+    <div class="browser-warning-overlay" id="browserWarningOverlay">
+        <div class="browser-warning-popup">
+            <h2>Performance Warning!</h2>
+            <p>
+                It seems you're using **Google Chrome**. While our site works in Chrome,
+                some users might experience better performance, especially on the products page,
+                when using browsers like **Brave** or **Firefox** due to their rendering engines and optimizations.
+            </p>
+            <p>
+                For the best experience, we recommend trying a different browser.
+            </p>
+            <button onclick="closeBrowserWarning()">Got It!</button>
+        </div>
+    </div>
+
+    <div class="homebar-wrapper">
+        <div class="homebar" id="homebar">
+            <a href="index.html" class="homebarbutton"><span>Home</span></a>
+            <a href="products.html" class="shopbutton"><span>Products</span></a>
+            <a href="about.html" class="aboutbutton"><span>About</span></a>
+            
+            <a href="https://dsc.gg/metrixgg" target="_blank" class="social-button discord-button" aria-label="Join our Discord">
+                <i class="fab fa-discord"></i>
+            </a>
+            <a href="https://youtube.com/@CMDHead" target="_blank" class="social-button youtube-button" aria-label="Follow us on Twitter">
+                <i class="fab fa-youtube"></i> </a>
+            </div>
+    </div>
+
+    <h1 class="Header">Metrix's Mods</h1>
+
+    <section class="hero-section">
+        <p>
+            Welcome to Metrix's Mods, your ultimate destination for high-performance, custom-crafted
+            server modifications and enhancements. Dive into a world where efficiency meets innovation.
+        </p>
+        <div class="hero-buttons">
+            <a href="products.html" class="hero-button">Explore Mods</a>
+            <a href="about.html" class="hero-button">Learn More</a>
+        </div>
+    </section>
+
+    <script>
+        // Function to detect Chrome (and NOT Brave, which also includes "Chrome" in userAgent)
+        function isChrome() {
+            const userAgent = navigator.userAgent;
+            const isChromium = userAgent.includes("Chrome") || userAgent.includes("CriOS"); // Chrome on desktop or iOS
+            const isOpera = userAgent.includes("OPR"); // Opera
+            const isEdge = userAgent.includes("Edg"); // New Edge
+            
+            // Brave uniquely exposes navigator.brave object
+            // Use a promise-based check for isBrave() as recommended by Brave devs
+            // Check for window.navigator.brave.isBrave to be a function to avoid errors in non-Brave browsers
+            return isChromium && !isOpera && !isEdge && !(window.navigator.brave && typeof window.navigator.brave.isBrave === 'function' && window.navigator.brave.isBrave());
+        }
+
+        const browserWarningOverlay = document.getElementById('browserWarningOverlay');
+
+        function closeBrowserWarning() {
+            browserWarningOverlay.classList.remove('show');
+            sessionStorage.setItem('chromeWarningDismissed', 'true');
+        }
+
+        // Initial page load animations and browser detection
+        window.addEventListener('load', async () => {
+            // Animate elements in
+            setTimeout(() => {
+                document.getElementById('homebar').classList.add('loaded');
+                document.querySelector('.Header').classList.add('loaded');
+                document.querySelector('.hero-section').classList.add('loaded');
+            }, 500);
+
+            // Check if the warning has already been dismissed in this session
+            if (sessionStorage.getItem('chromeWarningDismissed') !== 'true') {
+                const chromeDetected = isChrome();
+                
+                if (chromeDetected) {
+                    setTimeout(() => {
+                        browserWarningOverlay.classList.add('show');
+                    }, 2000); 
+                }
+            }
+        });
+    </script>
+</body>
+</html>

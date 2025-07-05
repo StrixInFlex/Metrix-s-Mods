@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Metrix's Mods - About Us</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Base styles */
+        :root {
+            --neon-blue: #00FFFF; /* Cyan/Aqua */
+            --neon-purple: #9933FF; /* Purple */
+            --dark-bg: #0a0a0a;
+            --mid-dark-bg: #1a1a1a;
+            --text-light: #E0E0E0;
+            --text-accent: var(--neon-blue);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden; /* Prevent horizontal scroll from animations */
+            position: relative;
+        }
+
+        /* --- Animated Background Grid --- */
+        #background-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+            will-change: transform, opacity;
+        }
+
+        #background-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(to right, rgba(0,255,255,0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0,255,255,0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            opacity: 0.15;
+            animation: moveGrid 60s linear infinite;
+            will-change: background-position;
+        }
+
+        @keyframes moveGrid {
+            from { background-position: 0 0; }
+            to { background-position: 50px 50px; }
+        }
+
+        /* --- Home Bar Styles (MATCHING index.html) --- */
+        .homebar-wrapper {
+            display: flex;
+            justify-content: center; /* Changed to center to match index.html's wrapper behavior */
+            padding-top: 30px;
+            position: relative;
+            z-index: 100;
+            width: 90%; /* Ensure wrapper takes sufficient width */
+            max-width: 1000px;
+        }
+
+        .homebar {
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            display: flex;
+            justify-content: space-between; /* Important: Distributes items and pushes social links to end */
+            align-items: center;
+            height: 70px;
+            padding: 0 2rem;
+            border-radius: 15px;
+            overflow: hidden;
+            gap: 20px; /* Adjusted gap to fit social buttons */
+            opacity: 0;
+            transform: translateY(-80px);
+            transition: opacity 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            max-width: 1000px;
+            width: 100%; /* Homebar now takes full width of its wrapper */
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.2), 0 0 60px rgba(0, 255, 255, 0.1);
+            animation: homebarGlow 6s infinite alternate ease-in-out;
+            will-change: box-shadow, transform, opacity;
+        }
+
+        @keyframes homebarGlow {
+            0% { box-shadow: 0 0 30px rgba(0, 255, 255, 0.2), 0 0 60px rgba(0, 255, 255, 0.1); }
+            100% { box-shadow: 0 0 40px rgba(0, 255, 255, 0.4), 0 0 80px rgba(0, 255, 255, 0.2); }
+        }
+
+        .homebar.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Combined styling for both <a> and <button> in homebar to ensure consistency */
+        /* EXCLUDING social-button from main button styling */
+        .homebar a:not(.social-button), 
+        .homebar button {
+            text-decoration: none; /* Crucial: Remove underline for links */
+            border-radius: 10px;
+            width: 220px; /* Keep main buttons wide */
+            background-color: var(--mid-dark-bg);
+            color: var(--text-light);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px 25px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            /* Flexbox for centering span content inside */
+            display: flex; /* Make it a flex container */
+            justify-content: center; /* Center horizontally */
+            align-items: center; 
+            
+            transition: 
+                background-color 0.4s ease, 
+                transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                box-shadow 0.4s ease,
+                color 0.4s ease,
+                text-shadow 0.4s ease,
+                opacity 0.6s ease-out;
+            
+            opacity: 0;
+            transform: translateY(30px);
+            will-change: transform, opacity, box-shadow;
+        }
+
+        /* Inner glow effect for buttons/links */
+        .homebar a::before,
+        .homebar button::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: radial-gradient(circle at center, rgba(0, 255, 255, 0.5) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: scale(0);
+            transition: transform 0.4s ease, opacity 0.4s ease;
+            opacity: 0;
+            z-index: 1;
+            will-change: transform, opacity;
+        }
+
+        .homebar a:hover::before,
+        .homebar button:hover::before {
+            transform: scale(3);
+            opacity: 1;
+        }
+
+        .homebar a span,
+        .homebar button span {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Staggered animation for homebar items (MATCHING index.html delays) */
+        .homebar.loaded .homebarbutton {
+            transform: translateY(0);
+            opacity: 1;
+            transition-delay: 0.2s;
+        }
+
+        .homebar.loaded .shopbutton {
+            transform: translateY(0);
+            opacity: 1;
+            transition-delay: 0.4s;
+        }
+
+        .homebar.loaded .aboutbutton {
+            transform: translateY(0);
+            opacity: 1;
+            transition-delay: 0.6s;
+        }
+
+        /* Hover with more dramatic glow */
+        .homebar a:not(.social-button):hover, 
+        .homebar button:hover {
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px var(--neon-blue), 0 0 20px rgba(0, 255, 255, 0.6);
+            transform: translateY(-5px) scale(1.08);
+            background-color: var(--dark-bg);
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 25px var(--neon-blue), 0 0 50px rgba(0, 255, 255, 0.4);
+        }
+
+        /* --- Social Button Specific Styles (MATCHING index.html) --- */
+        .social-button {
+            width: 50px; /* Smaller size for icons */
+            height: 50px;
+            border-radius: 50%; /* Make them round */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem; /* Icon size */
+            color: var(--text-light);
+            background-color: var(--mid-dark-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative; /* For inner glow */
+            overflow: hidden;
+            flex-shrink: 0; /* Prevent shrinking on smaller screens */
+            opacity: 0; /* Initial state for animation */
+            transform: translateY(30px); /* Initial state for animation */
+            will-change: transform, opacity, box-shadow, background-color, color;
+        }
+
+        .social-button:hover {
+            transform: translateY(-5px) scale(1.15); /* Lift and enlarge on hover */
+            color: var(--neon-blue);
+            text-shadow: 0 0 8px var(--neon-blue);
+            box-shadow: 0 0 20px var(--neon-blue), 0 0 30px rgba(0, 255, 255, 0.4);
+            border-color: var(--neon-blue);
+            background-color: var(--dark-bg);
+        }
+
+        /* Inner glow for social buttons (reusing existing effect) */
+        .social-button::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: radial-gradient(circle at center, rgba(0, 255, 255, 0.5) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: scale(0);
+            transition: transform 0.4s ease, opacity 0.4s ease;
+            opacity: 0;
+            z-index: 1;
+            will-change: transform, opacity;
+        }
+
+        .social-button:hover::before {
+            transform: scale(2.5); /* Slightly smaller scale than main buttons */
+            opacity: 1;
+        }
+
+        .social-button i {
+            position: relative; /* Ensure icon is above pseudo-element */
+            z-index: 2;
+        }
+
+        /* Specific colors for social buttons (optional, but nice) */
+        .discord-button:hover {
+            color: #7289DA; /* Discord blue */
+            text-shadow: 0 0 8px #7289DA;
+            box-shadow: 0 0 20px #7289DA, 0 0 30px rgba(114, 137, 218, 0.4);
+            border-color: #7289DA;
+        }
+        .youtube-button:hover { /* Changed from twitter to youtube for about.html as per initial request */
+            color: #FF0000; /* YouTube brand color */
+            text-shadow: 0 0 8px #FF0000;
+            box-shadow: 0 0 20px #FF0000, 0 0 30px rgba(255, 0, 0, 0.4);
+            border-color: #FF0000;
+        }
+
+        /* Update homebar loaded animation delays to include social buttons */
+        .homebar.loaded .social-button:nth-of-type(4) { /* Targets the first social button after the 3 main links */
+            transform: translateY(0);
+            opacity: 1;
+            transition-delay: 0.8s;
+        }
+        .homebar.loaded .social-button:nth-of-type(5) { /* Targets the second social button */
+            transform: translateY(0);
+            opacity: 1;
+            transition-delay: 1.0s;
+        }
+
+        /* --- Header Style --- */
+        .Header {
+            font-family: 'Orbitron', sans-serif;
+            opacity: 0;
+            transform: translateY(-50px);
+            transition: opacity 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            color: white;
+            text-align: center;
+            margin-top: 8vh; /* Adjusted for home page now */
+            font-size: 4.5rem;
+            font-weight: 700;
+            text-shadow: 0 0 20px var(--neon-purple), 0 0 40px var(--neon-purple), 0 0 60px rgba(153, 51, 255, 0.4);
+            letter-spacing: 5px;
+            position: relative;
+            z-index: 10;
+            will-change: transform, opacity, text-shadow;
+        }
+
+        @keyframes headerPulse {
+            0% { box-shadow: 0 0 30px rgba(0, 255, 255, 0.2), 0 0 60px rgba(0, 255, 255, 0.1); }
+            100% { box-shadow: 0 0 40px rgba(0, 255, 255, 0.4), 0 0 80px rgba(0, 255, 255, 0.2); }
+        }
+
+        .Header.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- Main Content (About Section) --- */
+        .about-content-section { 
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transition-delay: 0.8s;
+            text-align: center;
+            max-width: 900px;
+            margin-top: 60px;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+            will-change: transform, opacity;
+            background-color: rgba(0, 0, 0, 0.5); /* Add background for readability */
+            backdrop-filter: blur(3px);
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(153, 51, 255, 0.3), 0 0 60px rgba(153, 51, 255, 0.15);
+            margin-bottom: 80px;
+            padding: 40px; /* More padding for content */
+        }
+
+        .about-content-section.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .about-content-section h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            color: var(--neon-purple);
+            text-shadow: 0 0 15px var(--neon-purple), 0 0 30px rgba(153, 51, 255, 0.6);
+            margin-bottom: 25px;
+        }
+
+        .about-content-section p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+
+        /* --- Responsive Adjustments (MATCHING index.html for homebar) --- */
+        @media (max-width: 1024px) {
+            .Header { font-size: 3.5rem; }
+            .about-content-section h2 { font-size: 2rem; }
+            .about-content-section p { font-size: 1.1rem; }
+        }
+
+        @media (max-width: 768px) {
+            .homebar { 
+                flex-direction: row; /* Keep row for small screens, but allow wrap */
+                flex-wrap: wrap; /* Allow wrapping */
+                height: auto; 
+                padding: 1rem; 
+                gap: 15px; 
+                justify-content: center; /* Center items when wrapped */
+            }
+            .homebar a:not(.social-button), 
+            .homebar button { 
+                width: 150px; /* Adjust button width */
+                font-size: 1.1rem;
+            }
+            .social-button {
+                width: 40px; /* Make social buttons smaller */
+                height: 40px;
+                font-size: 1.2rem;
+            }
+            .Header { font-size: 3rem; margin-top: 5vh; letter-spacing: 3px;}
+            .about-content-section {
+                margin-top: 40px;
+                padding: 30px;
+            }
+            .about-content-section h2 { font-size: 1.8rem; }
+            .about-content-section p { font-size: 1rem; }
+        }
+
+        @media (max-width: 480px) {
+            .Header { font-size: 2.5rem; letter-spacing: 2px; }
+            .homebar a:not(.social-button), 
+            .homebar button { font-size: 1rem; padding: 10px 15px; width: 120px; }
+            .social-button {
+                width: 35px; /* Even smaller social buttons */
+                height: 35px;
+                font-size: 1rem;
+            }
+            .about-content-section {
+                margin-top: 30px;
+                padding: 20px;
+            }
+            .about-content-section h2 { font-size: 1.5rem; }
+            .about-content-section p { font-size: 0.9rem; }
+        }
+        .social-button {
+            text-decoration: none; /* Ensure social buttons don't have underlines */
+        }
+    </style>
+</head>
+<body>
+    <div id="background-overlay">
+        <div id="background-grid"></div>
+    </div>
+
+    <div class="homebar-wrapper">
+        <div class="homebar" id="homebar">
+            <a href="index.html" class="homebarbutton"><span>Home</span></a>
+            <a href="products.html" class="shopbutton"><span>Products</span></a>
+            <a href="about.html" class="aboutbutton"><span>About</span></a>
+            <a href="https://dsc.gg/metrixgg" target="_blank" class="social-button discord-button" aria-label="Join our Discord">
+                <i class="fab fa-discord"></i>
+            </a>
+            <a href="https://youtube.com/@CMDHead" target="_blank" class="social-button youtube-button" aria-label="Follow us on YouTube">
+                <i class="fab fa-youtube"></i>
+            </a>
+        </div>
+    </div>
+
+    <h1 class="Header">About Metrix's Mods</h1>
+
+    <div class="about-content-section" id="aboutContent">
+        <h2>Our Mission</h2>
+        <p>At Metrix's Mods, we are dedicated to providing high-quality, innovative server modifications that enhance your online experience. We strive to create stable, secure, and feature-rich mods that cater to a wide range of needs, from performance enhancements to exciting new gameplay mechanics.</p>
+        
+        <h2>Who We Are</h2>
+        <p>We are a passionate team of developers and gamers who understand the importance of a smooth and enjoyable server environment. With years of experience in modding and server administration, we bring expertise and creativity to every project, ensuring our products meet the highest standards.</p>
+        
+        <h2>What We Offer</h2>
+        <p>Our product line includes a variety of server mods designed to optimize performance, add unique features, and improve overall server management. We are constantly working on new projects and updates to keep up with the evolving needs of the gaming community.</p>
+        
+        <h2>Join Our Community</h2>
+        <p>We believe in fostering a strong community. Join our Discord server to connect with other users, get support, share ideas, and stay updated on our latest releases and news.</p>
+    </div>
+
+    <script>
+        // Initial page load animations
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('homebar').classList.add('loaded');
+                document.querySelector('.Header').classList.add('loaded');
+                document.getElementById('aboutContent').classList.add('loaded'); // Target specific ID for about section
+            }, 500);
+        });
+    </script>
+</body>
+</html>
